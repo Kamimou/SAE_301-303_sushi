@@ -1,0 +1,20 @@
+[
+  {
+    "ref": "ORD-B00DD1A0",
+    "createdAt": "2025-11-12T08:17:38.238Z",
+    "customer": {
+      "name": "Client invité",
+      "email": null,
+      "phone": null
+    },
+    "notes": null,
+    "items": [
+      {
+        "productId": 1,
+        "quantity": 1,
+        "unitPrice": 6.5
+      }
+    ],
+    "total": 6.5
+  }
+]

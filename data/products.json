@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "name": "Maki Saumon",
+    "price": 6.5,
+    "image": "https://picsum.photos/seed/s1/400/300",
+    "description": "Rouleaux de riz vinaigré, saumon frais et algue nori."
+  },
+  {
+    "id": 2,
+    "name": "Sashimi Thon",
+    "price": 8.0,
+    "image": "https://picsum.photos/seed/s2/400/300",
+    "description": "Tranches de thon rouge découpées minute."
+  },
+  {
+    "id": 3,
+    "name": "California Avocat",
+    "price": 7.0,
+    "image": "https://picsum.photos/seed/s3/400/300",
+    "description": "Avocat, concombre croquant et saumon fumé."
+  },
+  {
+    "id": 4,
+    "name": "Menu Dégustation",
+    "price": 18.0,
+    "image": "https://picsum.photos/seed/s4/400/300",
+    "description": "Assortiment de 14 pièces pour 2 personnes."
+  }
+]
+

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Menu — Sushii</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner" role="navigation" aria-label="Navigation principale">
+      <a class="logo" href="/">Sushii</a>
+      <nav class="nav">
+        <a href="/menu.html" aria-current="page">Menu</a>
+        <a href="/cart.html">Panier <span id="cart-count" aria-live="polite">0</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <div id="feedback" class="toast" role="status" aria-live="polite"></div>
+
+  <main>
+    <section class="container menu-list" id="menu-list">
+      <h1>Notre menu</h1>
+      <!-- Les produits seront injectés par app.js -->
+      <div id="products" class="products-grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© Sushii</div>
+    </div>
+  </footer>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>

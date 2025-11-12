@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sushii — Accueil</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner" role="navigation" aria-label="Navigation principale">
+      <a class="logo" href="/">Sushii</a>
+      <nav class="nav">
+        <a href="/menu.html">Menu</a>
+        <a href="/cart.html">Panier <span id="cart-count" aria-live="polite">0</span></a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <div id="feedback" class="toast" role="status" aria-live="polite"></div>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Bienvenue chez Sushii</h1>
+        <p>Des sushis frais, préparation maison, livraison rapide.</p>
+        <a class="btn" href="/menu.html">Commander</a>
+      </div>
+    </section>
+
+    <section id="features" class="container features">
+      <article>
+        <h3>Frais & local</h3>
+        <p>Ingrédients sélectionnés chez nos fournisseurs locaux.</p>
+      </article>
+      <article>
+        <h3>Livraison rapide</h3>
+        <p>Livraison en 30–45 min dans la zone.</p>
+      </article>
+      <article>
+        <h3>Sûr & conforme</h3>
+        <p>Conforme RGPD : seules les données nécessaires sont collectées.</p>
+      </article>
+    </section>
+
+    <section id="contact" class="container contact">
+      <h2>Contact</h2>
+      <form id="contact-form">
+        <label>Nom <input name="name" required></label>
+        <label>Email <input name="email" type="email" required></label>
+        <label>Message <textarea name="message" required></textarea></label>
+        <button type="submit" class="btn">Envoyer</button>
+      </form>
+      <p class="small">Pour la politique de confidentialité et mentions légales, voir les liens en bas.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© Sushii — Mentions légales • Politique de confidentialité</div>
+      <div>Contact RGPD : rgpd@sushii.example</div>
+    </div>
+  </footer>
+
+  <!-- Cookie banner (RGPD) -->
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-live="polite" aria-label="Gestion des cookies" hidden>
+    <p>Nous utilisons des cookies pour améliorer ton expérience. Accepter ?</p>
+    <div>
+      <button id="accept-cookies" class="btn">Accepter</button>
+      <button id="reject-cookies" class="btn outline">Refuser</button>
+      <a href="/politique.html" class="small link">Personnaliser</a>
+    </div>
+  </div>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "sushii-app",
+  "version": "1.2.0",
+  "description": "Site vitrine + mini API pour la sandwicherie Sushii.",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "nodemon server/index.js",
+    "start": "node server/index.js",
+    "lint": "npx prettier --check .",
+    "format": "npx prettier --write ."
+  },
+  "keywords": [
+    "sushi",
+    "express",
+    "demo"
+  ],
+  "author": "Sushii Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5"
+  }
+}
+
