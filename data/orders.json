@@ -16,5 +16,23 @@
       }
     ],
     "total": 6.5
+  },
+  {
+    "ref": "ORD-0C906067",
+    "createdAt": "2025-11-12T08:28:31.299Z",
+    "customer": {
+      "name": "Client invité",
+      "email": null,
+      "phone": null
+    },
+    "notes": null,
+    "items": [
+      {
+        "productId": 1,
+        "quantity": 1,
+        "unitPrice": 6.5
+      }
+    ],
+    "total": 6.5
   }
 ]

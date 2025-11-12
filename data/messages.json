@@ -1,2 +1,9 @@
-[]
-
+[
+  {
+    "id": "ee392daf-49cc-43b6-b11b-b85e326fa3d1",
+    "name": "Imène Lachab",
+    "email": "imene.lachab@edu.univ-eiffel.fr",
+    "message": "Coucou ! C'est un test !",
+    "submittedAt": "2025-11-12T08:32:04.827Z"
+  }
+]
