@@ -1,4 +1,4 @@
-Absolument \! Voici à nouveau le contenu du fichier `README.md` pour guider vos collègues dans la configuration du Back-End PHP/MySQL.
+ Voici le guide pour vous guider dans la configuration du Back-End PHP/MySQL.
 
 -----
 
@@ -43,7 +43,7 @@ Cette étape crée la base de données et les tables nécessaires.
 
 -----
 
-## Étape 3 : Configuration de la Connexion PHP
+## Étape 3 : Configuration de la Connexion PHP (L'étape 3 peut etre ignoré si config.php apparait)
 
 Le Back-End a besoin des identifiants de votre installation MySQL locale.
 
