@@ -1,0 +1,49 @@
+{
+  "name": "sushii-app",
+  "version": "1.2.0",
+  "description": "Site vitrine + mini API pour la sandwicherie Sushii.",
+  "main": "server/index.js",
+  "scripts": {
+  "dev": "concurrently \"npm run client\"",
+  "server": "echo 'Le serveur Node.js a été remplacé par XAMPP/PHP. Utilisez XAMPP Control Panel.'", 
+  "client": "ng serve --open",
+  "start": "ng serve -o",
+  "build": "ng build --configuration production",
+  "lint": "ng lint",
+  "format": "npx prettier --write ."
+},
+  "keywords": [
+    "sushi",
+    "express",
+    "angular",
+    "bootstrap"
+  ],
+  "author": "Sushii Team",
+  "license": "MIT",
+  "dependencies": {
+    "@angular/animations": "^18.0.0",
+    "@angular/common": "^18.0.0",
+    "@angular/compiler": "^18.0.0",
+    "@angular/core": "^18.0.0",
+    "@angular/forms": "^18.0.0",
+    "@angular/platform-browser": "^18.0.0",
+    "@angular/platform-browser-dynamic": "^18.0.0",
+    "@angular/router": "^18.0.0",
+    "bootstrap": "^5.3.0",
+    "express": "^4.19.2",
+    "rxjs": "^7.8.0",
+    "tslib": "^2.6.0",
+    "zone.js": "^0.14.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^18.0.0",
+    "@angular/cli": "^18.0.0",
+    "@angular/compiler-cli": "^18.0.0",
+    "@types/node": "^20.0.0",
+    "concurrently": "^8.2.0",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
+    "typescript": "~5.4.0"
+  }
+}
+
