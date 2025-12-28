@@ -17,11 +17,14 @@ import { CartService } from '../../services/cart.service';
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <nav class="navbar-nav ms-auto">
+          <nav class="navbar-nav ms-auto align-items-center flex-row gap-3">
             <a class="nav-link" routerLink="/menu" routerLinkActive="active">Menu</a>
-            <a class="nav-link" routerLink="/cart" routerLinkActive="active">
+            <a class="nav-link position-relative" routerLink="/cart" routerLinkActive="active">
               Panier
-              <span class="badge bg-primary ms-2" *ngIf="cartCount > 0">{{ cartCount }}</span>
+              <span class="badge bg-primary ms-2" *ngIf="cartCount > 0"></span>
+            </a>
+             <a class="nav-link" routerLink="/login" title="Mon compte">
+            <i class="bi bi-person fs-4"></i>
             </a>
           </nav>
         </div>
