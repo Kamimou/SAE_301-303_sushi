@@ -23,7 +23,7 @@ import { CartService } from '../../services/cart.service';
               Panier
               <span class="badge bg-primary ms-2" *ngIf="cartCount > 0"></span>
             </a>
-             <a class="nav-link" routerLink="/login" title="Mon compte">
+             <a class="nav-link" routerLink="/inscription" title="Mon compte">
             <i class="bi bi-person fs-4"></i>
             </a>
           </nav>
