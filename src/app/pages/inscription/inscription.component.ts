@@ -43,13 +43,13 @@ template: `
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Mot de passe</label>
-        <input type="password" class="form-control">
+        <label class="form-label">Numéro de téléphone</label>
+        <input type="tel" class="form-control">
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Numéro de téléphone</label>
-        <input type="tel" class="form-control">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-control">
       </div>
 
       <div class="mb-3">
@@ -72,8 +72,8 @@ template: `
       <label class="form-label">Rôle</label>
       <select class="form-select">
         <option value="" selected disabled>Choisir un rôle</option>
-        <option value="etudiant">Étudiant</option>
-        <option value="admin">Admin</option>
+      <option value="etudiant">Étudiant</option>
+      <option value="admin">Admin</option>
       </select>
       </div>
 
