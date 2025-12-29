@@ -62,7 +62,11 @@ export class MenuComponent implements OnInit {
 
   addToCart(productId: number) {
     const product = this.products.find(p => p.id === productId);
-    this.cartService.addToCart(productId, 1);
-    this.toastService.show(`${product?.nom} ajouté au panier`, 'success');
+    const ok = this.cartService.addToCart(productId, 1);
+    if (ok) {
+      this.toastService.show(`${product?.nom} ajouté au panier`, 'success');
+    } else {
+      this.toastService.show('Vous ne pouvez pas commander plus de 10 boxes à la fois', 'error');
+    }
   }
 }

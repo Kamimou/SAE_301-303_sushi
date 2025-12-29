@@ -18,9 +18,10 @@ export interface Product {
 export interface Order {
   items: { productId: number; quantity: number }[];
   customer?: {
-    name: string;
+    name?: string;
     email?: string;
     phone?: string;
+    isStudent?: boolean;
   };
   notes?: string;
 }

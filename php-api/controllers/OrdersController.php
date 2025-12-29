@@ -100,14 +100,55 @@ function submitOrder() {
             return;
         }
 
-        // 5) Insérer dans ORDERS
+        // Vérifier la quantité totale de boxes (max 10)
+        $totalQuantity = 0;
+        foreach ($validItems as $vi) {
+            $totalQuantity += $vi['quantity'];
+        }
+        if ($totalQuantity > 10) {
+            $pdo->rollBack();
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'La commande dépasse la limite de 10 boxes par commande.'
+            ]);
+            return;
+        }
+
+        // 5) Calcul des remises et insertion dans ORDERS
+        // Récupérer si le client est étudiant (si fourni) sinon tenter par email
+        $isStudent = 0;
+        if (isset($data['customer']['isStudent'])) {
+            $isStudent = $data['customer']['isStudent'] ? 1 : 0;
+        } else if (!empty($data['customer']['email'])) {
+            $stmtUser = $pdo->prepare("SELECT is_student FROM users WHERE email = ?");
+            $stmtUser->execute([$data['customer']['email']]);
+            $rowUser = $stmtUser->fetch(PDO::FETCH_ASSOC);
+            $isStudent = $rowUser ? (int)$rowUser['is_student'] : 0;
+        }
+
+        $subtotal = round($totalCalculated, 2);
+
+        $STUDENT_DISCOUNT = 8.0;
+        $THRESHOLD = 50.0;
+        $THRESHOLD_DISCOUNT = 1.5;
+        $MAX_DISCOUNT = 9.5;
+
+        $discountPercent = 0.0;
+        if ($isStudent) $discountPercent += $STUDENT_DISCOUNT;
+        if ($subtotal > $THRESHOLD) $discountPercent += $THRESHOLD_DISCOUNT;
+        if ($discountPercent > $MAX_DISCOUNT) $discountPercent = $MAX_DISCOUNT;
+
+        $discountAmount = round($subtotal * ($discountPercent / 100), 2);
+        $finalTotal = round($subtotal - $discountAmount, 2);
+
         $orderRef = uniqid('ORD-', true);
 
         $stmt = $pdo->prepare("
             INSERT INTO orders (ref, customer_name, total, status)
             VALUES (?, ?, ?, 'Pending')
         ");
-        $stmt->execute([$orderRef, $customerName, $totalCalculated]);
+        $stmt->execute([$orderRef, $customerName, $finalTotal]);
 
         $orderId = (int)$pdo->lastInsertId();
 
@@ -135,7 +176,10 @@ function submitOrder() {
         echo json_encode([
             'success' => true,
             'orderRef' => $orderRef,
-            'total' => $totalCalculated
+            'subtotal' => $subtotal,
+            'discountPercent' => $discountPercent,
+            'discountAmount' => $discountAmount,
+            'total' => $finalTotal
         ]);
 
     } catch (PDOException $e) {

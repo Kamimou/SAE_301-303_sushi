@@ -87,8 +87,9 @@ export class LoginComponent {
             alert(res.message || 'Identifiants incorrects');
           }
         },
-        error: () => {
-          alert('Erreur serveur');
+        error: (err) => {
+          const msg = err?.error?.message || (err?.status === 0 ? 'Erreur réseau' : 'Erreur serveur');
+          alert(msg);
         }
       });
     }

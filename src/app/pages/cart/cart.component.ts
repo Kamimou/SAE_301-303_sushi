@@ -131,7 +131,10 @@ export class CartComponent implements OnInit {
   }
 
   updateQuantity(productId: number, delta: number) {
-    this.cartService.updateQuantity(productId, delta);
+    const ok = this.cartService.updateQuantity(productId, delta);
+    if (!ok) {
+      this.toastService.show('Limite de 10 boxes atteinte', 'error');
+    }
   }
 
   removeFromCart(productId: number) {
@@ -140,18 +143,56 @@ export class CartComponent implements OnInit {
     this.toastService.show(`${product?.nom} retiré du panier`, 'success');
   }
 
+  get discountPercent(): number {
+    let p = 0;
+    if (this.getIsStudent()) p += 8;
+    if (this.total > 50) p += 1.5;
+    if (p > 9.5) p = 9.5;
+    return p;
+  }
+
+  get discountAmount(): number {
+    return +(this.total * (this.discountPercent / 100)).toFixed(2);
+  }
+
+  get finalTotal(): number {
+    return +(this.total - this.discountAmount).toFixed(2);
+  }
+
+  getIsStudent(): boolean {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return false;
+    const u = JSON.parse(userStr);
+    return !!(u && (u.is_student === 1 || u.is_student === true || u.isStudent === true));
+  }
+
   checkout() {
     if (this.cartItems.length === 0) {
       this.toastService.show('Ton panier est vide', 'error');
       return;
     }
 
+    if (this.cartService.getTotalItems() > 10) {
+      this.toastService.show('La commande dépasse la limite de 10 boxes', 'error');
+      return;
+    }
+
     this.submitting = true;
+
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    const isStudent = !!(user && (user.is_student === 1 || user.is_student === true || user.isStudent === true));
+
     const order = {
       items: this.cartItems.map(item => ({
         productId: item.productId,
         quantity: item.quantity
-      }))
+      })),
+      customer: {
+        isStudent,
+        email: user?.email,
+        name: user ? `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim() : undefined
+      }
     };
 
     this.apiService.submitOrder(order).subscribe({
@@ -162,7 +203,8 @@ export class CartComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erreur', error);
-        this.toastService.show('Erreur lors de la commande', 'error');
+        const msg = error?.error?.error ?? 'Erreur lors de la commande';
+        this.toastService.show(msg, 'error');
         this.submitting = false;
       }
     });

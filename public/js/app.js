@@ -227,8 +227,21 @@
 
     itemsContainer.innerHTML = html;
 
-    const total = entries.reduce((sum, entry) => sum + entry.lineTotal, 0);
-    totalContainer.textContent = `${total.toFixed(2)} €`;
+    const subtotal = entries.reduce((sum, entry) => sum + entry.lineTotal, 0);
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    let discountPercent = 0;
+    if (user && (user.is_student === 1 || user.isStudent === true)) discountPercent += 8;
+    if (subtotal > 50) discountPercent += 1.5;
+    if (discountPercent > 9.5) discountPercent = 9.5;
+    const discountAmount = +(subtotal * discountPercent / 100).toFixed(2);
+    const finalTotal = +(subtotal - discountAmount).toFixed(2);
+
+    totalContainer.innerHTML = `
+      <div class="d-flex justify-content-between"><span>Sous-total:</span><strong>${subtotal.toFixed(2)} €</strong></div>
+      ${discountPercent > 0 ? `<div class="d-flex justify-content-between text-success"><span>Remise (${discountPercent}%):</span><strong>-${discountAmount.toFixed(2)} €</strong></div>` : ''}
+      <div class="d-flex justify-content-between"><span><strong>Total:</strong></span><strong>${finalTotal.toFixed(2)} €</strong></div>
+    `;
   }
 
   async function fetchProducts() {
@@ -301,11 +314,22 @@
     }
 
     try {
+      if (state.cart.reduce((s, it) => s + it.quantity, 0) > 10) {
+        throw new Error('La commande dépasse la limite de 10 boxes.');
+      }
+
+      const userStr = localStorage.getItem('user');
+      const user = userStr ? JSON.parse(userStr) : null;
+
       const payload = {
         items: cartWithProductDetails().map((entry) => ({
           productId: entry.productId,
           quantity: entry.quantity,
         })),
+        customer: {
+          isStudent: !!(user && (user.is_student === 1 || user.isStudent === true)),
+          email: user?.email
+        }
       };
       const response = await fetch(`${API_BASE}/orders`, {
         method: 'POST',

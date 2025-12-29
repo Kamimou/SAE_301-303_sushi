@@ -34,25 +34,41 @@ export class CartService {
     return this.cartSubject.value;
   }
 
-  addToCart(productId: number, quantity: number = 1): void {
+  addToCart(productId: number, quantity: number = 1): boolean {
     const cart = [...this.getCart()];
+    const currentTotal = cart.reduce((s, it) => s + it.quantity, 0);
+    if (currentTotal + quantity > 10) {
+      // refuse l'ajout si on dépasse la limite globale
+      return false;
+    }
     const existing = cart.find(item => item.productId === productId);
     if (existing) {
-      existing.quantity = Math.min(existing.quantity + quantity, 25);
+      const available = 10 - (currentTotal - existing.quantity);
+      existing.quantity = Math.min(existing.quantity + quantity, Math.max(available, 1));
     } else {
       cart.push({ productId, quantity });
     }
     this.saveCart(cart);
+    return true;
   }
 
-  updateQuantity(productId: number, delta: number): void {
-    const cart = this.getCart()
-      .map(item => item.productId === productId
-        ? { ...item, quantity: Math.min(Math.max(item.quantity + delta, 1), 25) }
-        : item
-      )
-      .filter(item => item.quantity > 0);
-    this.saveCart(cart);
+  updateQuantity(productId: number, delta: number): boolean {
+    const cart = this.getCart();
+    const existing = cart.find(item => item.productId === productId);
+    if (!existing) return false;
+    const currentTotal = cart.reduce((s, it) => s + it.quantity, 0);
+    const newQuantity = Math.min(Math.max(existing.quantity + delta, 1), 25);
+    const proposedTotal = currentTotal - existing.quantity + newQuantity;
+    if (proposedTotal > 10) {
+      const allowed = 10 - (currentTotal - existing.quantity);
+      if (allowed <= 0) return false;
+      existing.quantity = Math.min(Math.max(allowed, 1), 25);
+    } else {
+      existing.quantity = newQuantity;
+    }
+    const nextCart = cart.map(it => it.productId === productId ? existing : it).filter(it => it.quantity > 0);
+    this.saveCart(nextCart);
+    return true;
   }
 
   removeFromCart(productId: number): void {
