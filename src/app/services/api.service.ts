@@ -48,6 +48,12 @@ export class ApiService {
     return this.http.post<any>(`${this.apiBase}/orders`, order);
   }
 
+  // Récupère les statistiques des commandes (labels, nombre de commandes, chiffre d'affaires)
+  // months: nombre de mois à remonter (ex: 3, 6, 12)
+  getOrdersStats(months = 12): Observable<{ months: number; labels: string[]; orders: number[]; revenue: number[] }> {
+    return this.http.get<{ months: number; labels: string[]; orders: number[]; revenue: number[] }>(`${this.apiBase}/orders/stats?months=${months}`);
+  }
+
   submitContact(data: { name: string; email: string; message: string }): Observable<any> {
     return this.http.post<any>(`${this.apiBase}/contact`, data);
   }

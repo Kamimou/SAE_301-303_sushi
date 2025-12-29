@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-profile',
@@ -24,8 +25,37 @@ import { AuthService, User } from '../../services/auth.service';
 
         <div *ngIf="isAdmin(); else clientView">
           <h5>Vue administrateur</h5>
-          <p>Commandes par mois (données à implémenter)</p>
-          <p>Chiffre d'affaires: (données à implémenter)</p>
+
+          <div *ngIf="loadingStats" class="text-center">Chargement des statistiques…</div>
+        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+          <div *ngIf="!loadingStats && !errorMessage">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <small class="text-muted">Période&nbsp;:</small>
+                <span class="ms-2">12 derniers mois</span>
+              </div>
+              <div class="text-muted small">Données basées sur les commandes enregistrées</div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <h6>Nombre de commandes par mois</h6>
+                <div class="chart-wrapper" style="height:320px; max-height:420px;">
+                  <canvas #ordersCanvas></canvas>
+                </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <h6>Chiffre d'affaires par mois</h6>
+                <div class="chart-wrapper" style="height:320px; max-height:420px;">
+                  <canvas #revenueCanvas></canvas>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="stats && stats.labels?.length === 0" class="text-muted">Pas encore de données.</div>
+
+          </div>
+
         </div>
 
         <ng-template #clientView>
@@ -43,15 +73,51 @@ import { AuthService, User } from '../../services/auth.service';
         </div>
       </ng-template>
     </div>
-  `
+  `,
+  styles: [
+    `
+    .chart-wrapper { position: relative; width: 100%; }
+    .chart-wrapper canvas { width: 100% !important; height: 100% !important; display: block; }
+    `
+  ]
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   user: User | null = null;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  @ViewChild('ordersCanvas') ordersCanvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('revenueCanvas') revenueCanvasRef!: ElementRef<HTMLCanvasElement>;
+
+  loadingStats = true;
+  errorMessage: string | null = null;
+  stats: { months?: number; labels: string[]; orders: number[]; revenue: number[] } | null = null;
+  selectedMonths = 12;
+
+  private ordersChart: any = null;
+  private revenueChart: any = null;
+
+  constructor(private auth: AuthService, private router: Router, private api: ApiService) {}
 
   ngOnInit(): void {
-    this.auth.user$.subscribe(u => this.user = u);
+    this.auth.user$.subscribe(u => {
+      this.user = u;
+      if (this.isAdmin()) {
+        // Si on est admin, (re)charger les stats
+        // Delay le chargement si les canvas ne sont pas encore prêts
+        setTimeout(() => this.loadStats(), 0);
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    // Pas strictement nécessaire car on déclenche via le subscribe, mais garde au cas où
+    if (this.isAdmin()) {
+      setTimeout(() => this.loadStats(), 0);
+    }
+  }
+
+  ngOnDestroy(): void {
+    try { this.ordersChart?.destroy(); } catch (e) {}
+    try { this.revenueChart?.destroy(); } catch (e) {}
   }
 
   isAdmin() {
@@ -61,5 +127,117 @@ export class ProfileComponent implements OnInit {
   logout() {
     this.auth.logout();
     this.router.navigate(['/']);
+  }
+
+
+  loadStats(months: number = this.selectedMonths) {
+    this.loadingStats = true;
+    this.errorMessage = null;
+    this.api.getOrdersStats(months).subscribe({
+      next: (res) => {
+        this.stats = res;
+        this.selectedMonths = res.months ?? months;
+        try {
+          this.renderCharts();
+        } catch (e) {
+          console.error('Erreur lors du rendu des graphiques', e);
+          this.errorMessage = 'Erreur lors du rendu des graphiques.';
+        } finally {
+          this.loadingStats = false;
+        }
+      },
+      error: (err) => {
+        console.error('Erreur stats', err);
+        this.errorMessage = err?.error?.error || err?.message || 'Erreur réseau lors de la récupération des statistiques.';
+        this.loadingStats = false;
+      }
+    });
+  }
+
+
+
+
+  renderCharts() {
+    if (!this.stats) return;
+
+    const Chart = (window as any).Chart;
+    if (!Chart) {
+      console.error('Chart.js introuvable. Ajoutez le script CDN dans index.html ou installez chart.js.');
+      return;
+    }
+
+    // Vérifications sur les canvas
+    if (!this.ordersCanvasRef?.nativeElement) {
+      console.error('Canvas orders introuvable');
+      return;
+    }
+    if (!this.revenueCanvasRef?.nativeElement) {
+      console.error('Canvas revenue introuvable');
+      return;
+    }
+
+    // Orders chart
+    try { this.ordersChart?.destroy(); } catch (e) {}
+    const ctx1 = this.ordersCanvasRef.nativeElement.getContext?.('2d');
+    if (ctx1) {
+      this.ordersChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: this.stats.labels.map(l => {
+            const d = new Date(l + '-01');
+            return d.toLocaleString('fr-FR', { month: 'short', year: 'numeric' });
+          }),
+          datasets: [{
+            label: 'Commandes',
+            data: this.stats.orders,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { ticks: { autoSkip: true, maxRotation: 0, maxTicksLimit: 12 }, grid: { display: false } },
+            y: { beginAtZero: true, ticks: { precision: 0 } }
+          },
+          plugins: { legend: { display: true } }
+        }
+      });
+    } else {
+      console.error('Impossible d’obtenir le contexte 2D pour ordersCanvas');
+    }
+
+    // Revenue chart
+    try { this.revenueChart?.destroy(); } catch (e) {}
+    const ctx2 = this.revenueCanvasRef.nativeElement.getContext?.('2d');
+    if (ctx2) {
+      this.revenueChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: this.stats.labels.map(l => {
+            const d = new Date(l + '-01');
+            return d.toLocaleString('fr-FR', { month: 'short', year: 'numeric' });
+          }),
+          datasets: [{
+            label: "Chiffre d'affaires (€)",
+            data: this.stats.revenue,
+            backgroundColor: 'rgba(75, 192, 192, 0.3)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { ticks: { autoSkip: true, maxRotation: 0, maxTicksLimit: 12 }, grid: { display: false } },
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    } else {
+      console.error('Impossible d’obtenir le contexte 2D pour revenueCanvas');
+    }
   }
 }

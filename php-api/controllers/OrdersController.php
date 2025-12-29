@@ -4,9 +4,74 @@
 function handleOrdersRequest($method, $segments) {
     if ($method === 'POST') {
         submitOrder();
+    } else if ($method === 'GET' && isset($segments[1]) && $segments[1] === 'stats') {
+        ordersStats();
     } else {
         http_response_code(405);
         echo json_encode(['error' => 'Méthode non supportée pour la ressource commandes.']);
+    }
+}
+
+// GET /orders/stats
+function ordersStats() {
+    $pdo = Database::connect();
+
+    try {
+        // Récupérer le paramètre months (ex: ?months=6). Défaut 12, borné entre 1 et 36.
+        $months = isset($_GET['months']) ? (int)$_GET['months'] : 12;
+        if ($months < 1) $months = 1;
+        if ($months > 36) $months = 36;
+
+        // Calculer la date de début (premier jour du mois il y a months-1 mois)
+        $startDate = (new DateTime())->modify('-' . ($months - 1) . ' months')->format('Y-m-01');
+
+        // Log debug
+        @file_put_contents(__DIR__ . '/../api_log.txt', date('c') . " orders/stats?months={$months} startDate={$startDate}\n", FILE_APPEND);
+
+        // Récupère le nombre de commandes et le CA par mois depuis $startDate
+        $stmt = $pdo->prepare("SELECT YEAR(created_at) AS y, MONTH(created_at) AS m, COUNT(*) AS orders_count, SUM(total) AS revenue
+            FROM orders
+            WHERE created_at >= ?
+            GROUP BY y, m
+            ORDER BY y, m");
+        $stmt->execute([$startDate]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Construire la liste des derniers mois (format YYYY-MM)
+        $labels = [];
+        $ordersMap = [];
+        $revenueMap = [];
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $dt = new DateTime();
+            $dt->modify("-{$i} months");
+            $label = $dt->format('Y-m');
+            $labels[] = $label;
+            $ordersMap[$label] = 0;
+            $revenueMap[$label] = 0.0;
+        }
+
+        foreach ($rows as $r) {
+            $label = sprintf('%04d-%02d', $r['y'], $r['m']);
+            if (array_key_exists($label, $ordersMap)) {
+                $ordersMap[$label] = (int)$r['orders_count'];
+                $revenueMap[$label] = (float)$r['revenue'];
+            }
+        }
+
+        $ordersArr = array_values($ordersMap);
+        $revenueArr = array_values($revenueMap);
+
+        echo json_encode([
+            'success' => true,
+            'months' => $months,
+            'labels' => $labels,
+            'orders' => $ordersArr,
+            'revenue' => $revenueArr
+        ]);
+
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Erreur lors de la récupération des statistiques']);
     }
 }
 
@@ -129,7 +194,7 @@ function submitOrder() {
 
         $subtotal = round($totalCalculated, 2);
 
-        $STUDENT_DISCOUNT = 8.0;
+        $STUDENT_DISCOUNT = 9.5;
         $THRESHOLD = 50.0;
         $THRESHOLD_DISCOUNT = 1.5;
         $MAX_DISCOUNT = 9.5;

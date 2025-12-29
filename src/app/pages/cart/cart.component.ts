@@ -71,6 +71,12 @@ interface CartItemWithProduct extends CartItem {
               <span>Sous-total:</span>
               <strong>{{ total | number:'1.2-2' }} €</strong>
             </div>
+            <div *ngIf="discountPercent > 0" class="d-flex justify-content-between text-success" [attr.title]="getIsStudent() ? 'Remise étudiante appliquée' : ''">
+              <span>{{ getIsStudent() ? 'Remise étudiante' : 'Remise' }} ({{ discountPercent }}%):</span>
+              <strong>-{{ discountAmount | number:'1.2-2' }} €</strong>
+            </div>
+            <div *ngIf="getIsStudent()" class="small text-muted mb-2">Remise étudiante appliquée</div>
+            <div class="d-flex justify-content-between"><span><strong>Total:</strong></span><strong>{{ finalTotal | number:'1.2-2' }} €</strong></div>
             <button type="button" class="btn btn-primary w-100" 
                     (click)="checkout()"
                     [disabled]="cartItems.length === 0 || submitting">
@@ -145,7 +151,7 @@ export class CartComponent implements OnInit {
 
   get discountPercent(): number {
     let p = 0;
-    if (this.getIsStudent()) p += 8;
+    if (this.getIsStudent()) p += 9.5;
     if (this.total > 50) p += 1.5;
     if (p > 9.5) p = 9.5;
     return p;
@@ -163,7 +169,13 @@ export class CartComponent implements OnInit {
     const userStr = localStorage.getItem('user');
     if (!userStr) return false;
     const u = JSON.parse(userStr);
-    return !!(u && (u.is_student === 1 || u.is_student === true || u.isStudent === true));
+    const val = u?.is_student ?? u?.isStudent;
+    if (val === 1 || val === true) return true;
+    if (typeof val === 'string') {
+      const s = val.toLowerCase();
+      return s === '1' || s === 'true';
+    }
+    return false;
   }
 
   checkout() {

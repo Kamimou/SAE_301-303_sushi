@@ -231,7 +231,15 @@
     const userStr = localStorage.getItem('user');
     const user = userStr ? JSON.parse(userStr) : null;
     let discountPercent = 0;
-    if (user && (user.is_student === 1 || user.isStudent === true)) discountPercent += 8;
+    const isStudent = !!(user && (
+      user.is_student === 1 ||
+      user.isStudent === true ||
+      user.is_student === '1' ||
+      user.is_student === 'true' ||
+      user.isStudent === '1' ||
+      user.isStudent === 'true'
+    ));
+    if (isStudent) discountPercent += 9.5;
     if (subtotal > 50) discountPercent += 1.5;
     if (discountPercent > 9.5) discountPercent = 9.5;
     const discountAmount = +(subtotal * discountPercent / 100).toFixed(2);
@@ -239,7 +247,7 @@
 
     totalContainer.innerHTML = `
       <div class="d-flex justify-content-between"><span>Sous-total:</span><strong>${subtotal.toFixed(2)} €</strong></div>
-      ${discountPercent > 0 ? `<div class="d-flex justify-content-between text-success"><span>Remise (${discountPercent}%):</span><strong>-${discountAmount.toFixed(2)} €</strong></div>` : ''}
+      ${discountPercent > 0 ? `<div class="d-flex justify-content-between text-success" title="${isStudent ? 'Remise étudiante appliquée' : ''}"><span>${isStudent ? 'Remise étudiante' : 'Remise'} (${discountPercent}%):</span><strong>-${discountAmount.toFixed(2)} €</strong></div>${isStudent ? '<div class="small text-muted">Remise étudiante appliquée</div>' : ''}` : ''}
       <div class="d-flex justify-content-between"><span><strong>Total:</strong></span><strong>${finalTotal.toFixed(2)} €</strong></div>
     `;
   }
