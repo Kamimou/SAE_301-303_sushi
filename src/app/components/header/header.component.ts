@@ -25,10 +25,19 @@ import { CartService } from '../../services/cart.service';
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-
+        
         <!-- MENU -->
         <div class="collapse navbar-collapse" id="navbarNav">
           <nav class="navbar-nav ms-auto align-items-center flex-row gap-3">
+            
+          <!-- RGPD -->
+            <a
+            class="nav-link"
+            routerLink="/rgpd"
+            routerLinkActive="active"
+            >
+            RGPD
+            </a>
 
             <!-- MENU -->
             <a

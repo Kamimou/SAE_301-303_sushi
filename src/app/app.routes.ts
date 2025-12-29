@@ -4,6 +4,7 @@ import { MenuComponent } from './pages/menu/menu.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { RegisterComponent } from './pages/inscription/inscription.component';
 import { LoginComponent } from './pages/connexion/login/login.component';
+import { RgpdComponent} from './pages/rgpd/rgpd.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: 'cart', component: CartComponent },
   { path: 'inscription', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'rgpd', component: RgpdComponent },
   { path: '**', redirectTo: '' }
 ];
