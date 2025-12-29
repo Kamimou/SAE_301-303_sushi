@@ -50,4 +50,9 @@ export class ApiService {
   submitContact(data: { name: string; email: string; message: string }): Observable<any> {
     return this.http.post<any>(`${this.apiBase}/contact`, data);
   }
+
+  // Enregistrement d'un utilisateur (inscription)
+  register(user: any): Observable<any> {
+    return this.http.post<any>(`${this.apiBase}/auth/register`, user);
+  }
 }

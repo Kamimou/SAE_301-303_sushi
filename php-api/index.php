@@ -47,6 +47,11 @@ switch ($resource) {
         handleProductsRequest($method, $segments);
         break;
         
+    case 'auth':
+        require 'controllers/AuthController.php';
+        handleAuthRequest($method, $segments);
+        break;
+
     case 'orders':
         require 'controllers/OrdersController.php';
         break;

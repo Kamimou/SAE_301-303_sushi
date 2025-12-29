@@ -249,6 +249,30 @@ INSERT INTO `product_items` (`id`, `product_id`, `item_name`, `quantity`) VALUES
 (58, 13, 'Sushi Saumon Tsukudani', 2.0),
 (59, 13, 'Edamame / Salade de chou', 1.0);
 
+-- --------------------------------------------------------
+--
+-- Structure de la table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `birth_date` date DEFAULT NULL,
+  `email` varchar(160) NOT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `zip_code` varchar(20) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `user_type` varchar(50) NOT NULL DEFAULT 'client',
+  `is_student` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
 --
 -- Index pour les tables déchargées
 --
@@ -294,6 +318,12 @@ ALTER TABLE `product_items`
   ADD KEY `product_id` (`product_id`);
 
 --
+-- Index pour la table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT pour les tables déchargées
 --
 
@@ -332,6 +362,12 @@ ALTER TABLE `product_flavors`
 --
 ALTER TABLE `product_items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+
+--
+-- AUTO_INCREMENT pour la table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- Contraintes pour les tables déchargées
