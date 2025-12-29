@@ -5,19 +5,17 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 // FIN DU DÉBUG
 
-// ... Le reste du code de index.php ...
-
 // ====================================================================
 // Configuration des En-têtes pour CORS et JSON
 // ====================================================================
 
-//C'est pour autoriser Angular (localhost:4200) à accéder à cette API
+// C'est pour autoriser Angular (localhost:4200) à accéder à cette API
 header("Access-Control-Allow-Origin: http://localhost:4200");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
 
-// Gére la requête OPTIONS (pré-vol CORS)
+// Gère la requête OPTIONS (pré-vol CORS)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -27,9 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Routage
 // ====================================================================
 
-// Nettoye l'URI pour identifier la ressource demandée (ex: 'products')
+// Nettoie l'URI pour identifier la ressource demandée (ex: 'products')
 $uri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
+
+// Log (debug)
+file_put_contents(__DIR__ . '/api_log.txt', date('c') . " $method " . $_SERVER['REQUEST_URI'] . PHP_EOL, FILE_APPEND);
 
 $uri = parse_url($uri, PHP_URL_PATH);
 $uri = str_replace('/php-api/index.php', '', $uri);
@@ -46,7 +47,7 @@ switch ($resource) {
         require 'controllers/ProductsController.php';
         handleProductsRequest($method, $segments);
         break;
-        
+
     case 'auth':
         require 'controllers/AuthController.php';
         handleAuthRequest($method, $segments);
@@ -54,12 +55,15 @@ switch ($resource) {
 
     case 'orders':
         require 'controllers/OrdersController.php';
+        // ✅ CORRECTION NÉCESSAIRE : on appelle la fonction du contrôleur
+        handleOrdersRequest($method, $segments);
         break;
+
     case 'contact':
         http_response_code(501); // Non implémenté
         echo json_encode(['error' => 'Route non implémentée.']);
         break;
-        
+
     case '':
     case 'health':
         http_response_code(200);
