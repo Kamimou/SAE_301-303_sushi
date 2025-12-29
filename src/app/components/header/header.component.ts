@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { AuthService, User } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -63,34 +64,63 @@ import { CartService } from '../../services/cart.service';
               </span>
             </a>
 
-            <!-- PROFIL -->
-            <div class="nav-item dropdown">
-
+            <!-- PROFIL: affichage selon état -->
+            <div *ngIf="user; else loggedOut" class="nav-item dropdown">
               <a
-                class="nav-link dropdown-toggle"
+                class="nav-link dropdown-toggle d-flex align-items-center"
                 href="#"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
                 title="Mon compte"
               >
-                <i class="bi bi-person fs-4"></i>
+                <img *ngIf="user?.avatar" [src]="user.avatar" class="rounded-circle me-2" width="32" height="32" alt="avatar">
+                <span class="me-1">{{ user?.first_name }} {{ user?.last_name }}</span>
               </a>
 
               <ul class="dropdown-menu dropdown-menu-end">
                 <li>
-                  <a class="dropdown-item" routerLink="/login">
-                    Connexion
+                  <a class="dropdown-item" routerLink="/profile">
+                    Profil
                   </a>
                 </li>
+                <li><hr class="dropdown-divider"></li>
                 <li>
-                  <a class="dropdown-item" routerLink="/inscription">
-                    Inscription
+                  <a class="dropdown-item" (click)="logout()">
+                    Se déconnecter
                   </a>
                 </li>
               </ul>
 
             </div>
+
+            <ng-template #loggedOut>
+              <div class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  title="Mon compte"
+                >
+                  <i class="bi bi-person fs-4"></i>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" routerLink="/login">
+                      Connexion
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" routerLink="/inscription">
+                      Inscription
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </ng-template>
 
           </nav>
         </div>
@@ -102,12 +132,26 @@ import { CartService } from '../../services/cart.service';
 export class HeaderComponent implements OnInit {
 
   cartCount = 0;
+  user: User | null = null;
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.cartService.cart$.subscribe(() => {
       this.cartCount = this.cartService.getTotalItems();
     });
+
+    this.auth.user$.subscribe(u => {
+      this.user = u;
+    });
+  }
+
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['/']);
   }
 }

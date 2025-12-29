@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -65,7 +66,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private api: ApiService,
-    private router: Router
+    private router: Router,
+    private auth: AuthService
   ) {}
 
   // 🔹 clic sur "Se connecter"
@@ -80,9 +82,9 @@ export class LoginComponent {
       this.api.login(payload).subscribe({
         next: (res: any) => {
           if (res.success) {
-            localStorage.setItem('user', JSON.stringify(res.user));
+            this.auth.setUser(res.user);
             alert('Connexion réussie !');
-            this.router.navigate(['/']);
+            this.router.navigate(['/profile']);
           } else {
             alert(res.message || 'Identifiants incorrects');
           }
