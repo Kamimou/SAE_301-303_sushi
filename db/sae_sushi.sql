@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 10 déc. 2025 à 23:49
+-- Généré le : mar. 30 déc. 2025 à 02:31
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -27,7 +27,6 @@ SET time_zone = "+00:00";
 -- Structure de la table `messages`
 --
 
-DROP TABLE IF EXISTS `messages`;
 CREATE TABLE `messages` (
   `id` int(11) NOT NULL,
   `name` varchar(120) NOT NULL,
@@ -42,9 +41,9 @@ CREATE TABLE `messages` (
 -- Structure de la table `orders`
 --
 
-DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `ref` varchar(32) NOT NULL,
   `customer_name` varchar(120) NOT NULL,
   `total` decimal(8,2) NOT NULL,
@@ -52,13 +51,22 @@ CREATE TABLE `orders` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Déchargement des données de la table `orders`
+--
+
+INSERT INTO `orders` (`id`, `user_id`, `ref`, `customer_name`, `total`, `status`, `created_at`) VALUES
+(1, 1, 'ORD-695299bf5399c5.74812886', 'Kilian Corpet', 71.61, 'Pending', '2025-12-29 16:09:51'),
+(2, 2, 'ORD-6953164ba1c713.20707373', 'Gerance Leny', 28.40, 'Pending', '2025-12-30 01:01:15'),
+(3, 2, 'ORD-69531c298e4669.29592415', 'Gerance Leny', 74.96, 'Pending', '2025-12-30 01:26:17'),
+(4, 3, 'ORD-69531dce7c7cc9.35609896', 'Pokta Salih', 57.56, 'Pending', '2025-12-30 01:33:18');
+
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `order_items`
 --
 
-DROP TABLE IF EXISTS `order_items`;
 CREATE TABLE `order_items` (
   `id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
@@ -67,13 +75,28 @@ CREATE TABLE `order_items` (
   `unit_price` decimal(6,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Déchargement des données de la table `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `unit_price`) VALUES
+(1, 1, 1, 2, 12.50),
+(2, 1, 2, 3, 15.90),
+(3, 2, 1, 1, 12.50),
+(4, 2, 2, 1, 15.90),
+(5, 3, 1, 1, 12.50),
+(6, 3, 7, 3, 15.90),
+(7, 3, 8, 1, 15.90),
+(8, 4, 7, 2, 15.90),
+(9, 4, 8, 1, 15.90),
+(10, 4, 9, 1, 15.90);
+
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `products`
 --
 
-DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -89,19 +112,19 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `pieces`, `price`, `description`, `image_key`, `is_available`) VALUES
-(1, 'Tasty Blend', 12, 12.50, 'Description du Tasty Blend', 'tasty-blend', 1),
-(2, 'Amateur Mix', 18, 15.90, 'Description de l\'Amateur Mix', 'amateur-mix', 1),
-(3, 'Saumon Original', 11, 12.50, 'Description du Saumon Original', 'saumon-original', 1),
-(4, 'Salmon Lovers', 18, 15.90, 'Description du Salmon Lovers', 'salmon-lovers', 1),
-(5, 'Salmon Classic', 10, 15.90, 'Description du Salmon Classic', 'salmon-classic', 1),
-(6, 'Master Mix', 12, 15.90, 'Description du Master Mix', 'master-mix', 1),
-(7, 'Sunrise', 18, 15.90, 'Description du Sunrise', 'sunrise', 1),
-(8, 'Sando Box Chicken Katsu', 13, 15.90, 'Description du Sando Box Chicken Katsu', 'sando-box-chicken-katsu', 1),
-(9, 'Sando Box Salmon Aburi', 13, 15.90, 'Description du Sando Box Salmon Aburi', 'sando-box-salmon-aburi', 1),
-(10, 'Super Salmon', 24, 19.90, 'Description du Super Salmon', 'super-salmon', 1),
-(11, 'California Dream', 24, 19.90, 'Description du California Dream', 'california-dream', 1),
-(12, 'Gourmet Mix', 22, 24.50, 'Description du Gourmet Mix', 'gourmet-mix', 1),
-(13, 'Fresh Mix', 22, 24.50, 'Description du Fresh Mix', 'fresh-mix', 1);
+(1, 'Tasty Blend', 12, 12.50, 'Description du Tasty Blend :\r\n\r\nAssortiment équilibré de makis saumon, makis avocat, nigiris saumon, accompagnés d’edamame et de pousses de daikon. Riz vinaigré et algue nori.', 'tasty-blend', 1),
+(2, 'Amateur Mix', 18, 15.90, 'Description de l\'Amateur Mix :\r\n\r\nSélection idéale pour débuter : makis saumon, makis avocat, makis concombre, avec nigiris saumon, edamame et pousses de daikon.', 'amateur-mix', 1),
+(3, 'Saumon Original', 11, 12.50, 'Description du Saumon Original :\r\n\r\nClassique incontournable composé de nigiris saumon et makis saumon, préparés avec du saumon frais, riz vinaigré et algue nori.', 'saumon-original', 1),
+(4, 'Salmon Lovers', 18, 15.90, 'Description du Salmon Lovers :\r\n\r\nPour les amateurs de saumon : nigiris saumon, makis saumon, california saumon avocat, accompagnés d’edamame et de pousses de daikon.', 'salmon-lovers', 1),
+(5, 'Salmon Classic', 10, 15.90, 'Description du Salmon Classic :\r\n\r\nAssortiment généreux de nigiris saumon et makis saumon, mettant à l’honneur le saumon cru, le riz vinaigré et l’algue nori.', 'salmon-classic', 1),
+(6, 'Master Mix', 12, 15.90, 'Description du Master Mix :\r\n\r\nMix complet et varié : makis saumon, makis avocat, nigiris saumon, thon, edamame et pousses de daikon.', 'master-mix', 1),
+(7, 'Sunrise', 18, 15.90, 'Description du Sunrise :\r\n\r\nAssortiment coloré composé de california rolls saumon, makis avocat, makis concombre, accompagné d’edamame et de pousses de daikon.', 'sunrise', 1),
+(8, 'Sando Box Chicken Katsu', 13, 15.90, 'Description du Sando Box Chicken Katsu :\r\n\r\nSandwich japonais moelleux garni de poulet pané katsu, salade, sauce tonkatsu, accompagné de makis concombre et makis avocat.', 'sando-box-chicken-katsu', 1),
+(9, 'Sando Box Salmon Aburi', 13, 15.90, 'Description du Sando Box Salmon Aburi :\r\n\r\nSandwich japonais au saumon aburi légèrement snacké, riz vinaigré, salade et sauce, servi avec california rolls et edamame.', 'sando-box-salmon-aburi', 1),
+(10, 'Super Salmon', 24, 19.90, 'Description du Super Salmon :\r\n\r\nAssortiment premium de makis saumon, california saumon avocat, nigiris saumon, edamame et pousses de daikon.', 'super-salmon', 1),
+(11, 'California Dream', 24, 19.90, 'Description du California Dream :\r\n\r\nSélection gourmande de california rolls (saumon, avocat, concombre), makis variés, accompagnés d’edamame.', 'california-dream', 1),
+(12, 'Gourmet Mix', 22, 24.50, 'Description du Gourmet Mix :\r\n\r\nAssortiment haut de gamme avec makis saumon, makis épicés, california rolls, nigiris saumon, edamame et garnitures fraîches.', 'gourmet-mix', 1),
+(13, 'Fresh Mix', 22, 24.50, 'Description du Fresh Mix :\r\n\r\nMix frais et généreux composé de nigiris saumon, makis saumon, california rolls, makis tempura, edamame et pousses de daikon.', 'fresh-mix', 1);
 
 -- --------------------------------------------------------
 
@@ -109,7 +132,6 @@ INSERT INTO `products` (`id`, `name`, `pieces`, `price`, `description`, `image_k
 -- Structure de la table `product_flavors`
 --
 
-DROP TABLE IF EXISTS `product_flavors`;
 CREATE TABLE `product_flavors` (
   `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -176,7 +198,6 @@ INSERT INTO `product_flavors` (`id`, `product_id`, `flavor`) VALUES
 -- Structure de la table `product_items`
 --
 
-DROP TABLE IF EXISTS `product_items`;
 CREATE TABLE `product_items` (
   `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -250,11 +271,11 @@ INSERT INTO `product_items` (`id`, `product_id`, `item_name`, `quantity`) VALUES
 (59, 13, 'Edamame / Salade de chou', 1.0);
 
 -- --------------------------------------------------------
+
 --
 -- Structure de la table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `last_name` varchar(100) NOT NULL,
@@ -271,7 +292,14 @@ CREATE TABLE `users` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
+--
+-- Déchargement des données de la table `users`
+--
+
+INSERT INTO `users` (`id`, `last_name`, `first_name`, `birth_date`, `email`, `phone`, `password`, `address`, `zip_code`, `city`, `user_type`, `is_student`, `created_at`) VALUES
+(1, 'Corpet', 'Kilian', '2025-12-12', 'kiliancorpet@gmail.com', '0787696359', '$2y$10$gWWA4K11HYVwyFK4n6wOyeyrq0qYb/IUSMyMkbkZAxV8SvRFZ1bCy', '27 Chemin de Crécy', '77100', 'Nanteuil-lès-Meaux', 'admin', 0, '2025-12-29 16:09:18'),
+(2, 'Leny', 'Gerance', '2003-11-27', 'lenygerance@gmail.com', '0123456789', '$2y$10$6eiogTnduJ1bcMUjaFyjC.HrFEPv8iUuuluosJmxd/8CsNzwGcdpO', '33 simple texte de l\'info', '77340', 'Pontault', 'client', 0, '2025-12-30 00:34:46'),
+(3, 'Salih', 'Pokta', '2006-02-28', 'molaire@gmail.com', '0234567891', '$2y$10$N05NmySFm39iKDeY2Z3wL.q0GYIw3FrgG4j4UGVrKkjodAlS49w9m', '8 rue de la pommade', '77321', 'Massy', 'client_etudiant', 1, '2025-12-30 01:32:43');
 
 --
 -- Index pour les tables déchargées
@@ -288,7 +316,8 @@ ALTER TABLE `messages`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `ref` (`ref`);
+  ADD UNIQUE KEY `ref` (`ref`),
+  ADD KEY `fk_orders_user` (`user_id`);
 
 --
 -- Index pour la table `order_items`
@@ -337,13 +366,13 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT pour la table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `products`
@@ -367,11 +396,17 @@ ALTER TABLE `product_items`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `fk_orders_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `order_items`
