@@ -48,6 +48,10 @@ export class ApiService {
     return this.http.post<any>(`${this.apiBase}/orders`, order);
   }
 
+  getUserOrders(userId: number): Observable<any> {
+  return this.http.get(`${this.apiBase}/orders/history?user_id=${userId}`);
+}
+
   // Récupère les statistiques des commandes (labels, nombre de commandes, chiffre d'affaires)
   // months: nombre de mois à remonter (ex: 3, 6, 12)
   getOrdersStats(months = 12): Observable<{ months: number; labels: string[]; orders: number[]; revenue: number[] }> {

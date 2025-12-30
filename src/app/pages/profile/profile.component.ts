@@ -59,11 +59,43 @@ import { ApiService } from '../../services/api.service';
         </div>
 
         <ng-template #clientView>
-          <h5>Commandes en cours</h5>
-          <p>(Liste des commandes en cours — implémenter l'API)</p>
-          <h5 class="mt-3">Historique</h5>
-          <p>(Historique des commandes — implémenter l'API)</p>
-        </ng-template>
+  <h5 class="mt-4">Mon Historique de Commandes</h5>
+  
+  <div *ngIf="loadingOrders" class="text-center p-3">
+    Chargement de vos commandes...
+  </div>
+
+  <div *ngIf="!loadingOrders && orders.length === 0" class="alert alert-light border">
+    Vous n'avez pas encore passé de commande.
+  </div>
+
+  <div *ngIf="!loadingOrders && orders.length > 0" class="table-responsive">
+    <table class="table table-hover mt-2">
+      <thead class="table-light">
+        <tr>
+          <th>Référence</th>
+          <th>Date</th>
+          <th>Total</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td><small class="text-monospace">{{ order.ref }}</small></td>
+          <td>{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td><strong>{{ order.total | number:'1.2-2' }} €</strong></td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'bg-warning text-dark': order.status === 'Pending',
+              'bg-success': order.status === 'Completed',
+              'bg-info': order.status === 'Shipping'
+            }">{{ order.status }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>
 
       </div>
 
@@ -83,6 +115,8 @@ import { ApiService } from '../../services/api.service';
 })
 export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   user: User | null = null;
+  orders: any[] = [];
+  loadingOrders = false;
 
   @ViewChild('ordersCanvas') ordersCanvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('revenueCanvas') revenueCanvasRef!: ElementRef<HTMLCanvasElement>;
@@ -100,10 +134,27 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.auth.user$.subscribe(u => {
       this.user = u;
-      if (this.isAdmin()) {
-        // Si on est admin, (re)charger les stats
-        // Delay le chargement si les canvas ne sont pas encore prêts
-        setTimeout(() => this.loadStats(), 0);
+      if (this.user) {
+        if (this.isAdmin()) {
+          setTimeout(() => this.loadStats(), 0);
+        } else {
+          this.loadUserOrders(); // <--- APPELER L'HISTORIQUE SI CLIENT
+        }
+      }
+    });
+  }
+  
+  loadUserOrders() {
+    if (!this.user?.id) return;
+    this.loadingOrders = true;
+    this.api.getUserOrders(this.user.id).subscribe({
+      next: (data : any) => {
+        this.orders = data;
+        this.loadingOrders = false;
+      },
+      error: (err : any) => {
+        console.error('Erreur historique', err);
+        this.loadingOrders = false;
       }
     });
   }

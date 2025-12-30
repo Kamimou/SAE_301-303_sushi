@@ -32,7 +32,7 @@ interface CartItemWithProduct extends CartItem {
             <div class="row align-items-center">
               <div class="col-md-3">
                 <img [src]="item.product.image" [alt]="item.product.nom"
-                     class="img-fluid" loading="lazy">
+                    class="img-fluid" loading="lazy">
               </div>
               <div class="col-md-5">
                 <h5 class="card-title">{{ item.product.nom }}</h5>
@@ -40,12 +40,12 @@ interface CartItemWithProduct extends CartItem {
               </div>
               <div class="col-md-2">
                 <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-outline-secondary" 
+                  <button type="button" class="btn btn-outline-secondary"
                           (click)="updateQuantity(item.productId, -1)">−</button>
                   <span class="btn btn-outline-secondary" style="pointer-events: none;">
                     {{ item.quantity }}
                   </span>
-                  <button type="button" class="btn btn-outline-secondary" 
+                  <button type="button" class="btn btn-outline-secondary"
                           (click)="updateQuantity(item.productId, 1)">+</button>
                 </div>
               </div>
@@ -77,7 +77,7 @@ interface CartItemWithProduct extends CartItem {
             </div>
             <div *ngIf="getIsStudent()" class="small text-muted mb-2">Remise étudiante appliquée</div>
             <div class="d-flex justify-content-between"><span><strong>Total:</strong></span><strong>{{ finalTotal | number:'1.2-2' }} €</strong></div>
-            <button type="button" class="btn btn-primary w-100" 
+            <button type="button" class="btn btn-primary w-100"
                     (click)="checkout()"
                     [disabled]="cartItems.length === 0 || submitting">
               {{ submitting ? 'Traitement...' : 'Passer la commande' }}
@@ -99,7 +99,7 @@ export class CartComponent implements OnInit {
     private cartService: CartService,
     private apiService: ApiService,
     private toastService: ToastService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadProducts();
@@ -132,7 +132,7 @@ export class CartComponent implements OnInit {
         };
       })
       .filter((item): item is CartItemWithProduct => item !== null);
-    
+
     this.total = this.cartItems.reduce((sum, item) => sum + item.lineTotal, 0);
   }
 
@@ -201,6 +201,7 @@ export class CartComponent implements OnInit {
         quantity: item.quantity
       })),
       customer: {
+        id: user.id,
         isStudent,
         email: user?.email,
         name: user ? `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim() : undefined

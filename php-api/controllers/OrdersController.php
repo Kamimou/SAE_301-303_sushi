@@ -4,11 +4,35 @@
 function handleOrdersRequest($method, $segments) {
     if ($method === 'POST') {
         submitOrder();
-    } else if ($method === 'GET' && isset($segments[1]) && $segments[1] === 'stats') {
-        ordersStats();
-    } else {
-        http_response_code(405);
-        echo json_encode(['error' => 'Méthode non supportée pour la ressource commandes.']);
+    } else if ($method === 'GET') {
+        $action = $segments[1] ?? '';
+        if ($action === 'stats') {
+            ordersStats();
+        } else if ($action === 'history') { // <--- AJOUTER CE BLOC
+            $userId = isset($_GET['user_id']) ? (int)$_GET['user_id'] : null;
+            if ($userId) {
+                getUserOrders($userId);
+            } else {
+                http_response_code(400);
+                echo json_encode(['error' => 'ID utilisateur manquant.']);
+            }
+        } else {
+            http_response_code(405);
+            echo json_encode(['error' => 'Action non reconnue.']);
+        }
+    }
+}
+
+function getUserOrders($userId) {
+    $pdo = Database::connect();
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt->execute([$userId]);
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($orders);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Erreur lors du chargement de l\'historique']);
     }
 }
 
@@ -207,13 +231,16 @@ function submitOrder() {
         $discountAmount = round($subtotal * ($discountPercent / 100), 2);
         $finalTotal = round($subtotal - $discountAmount, 2);
 
+        // RÉCUPÉRER L'ID UTILISATEUR DEPUIS LE JSON (Angular l'envoie via customer.id)
+        $userId = isset($data['customer']['id']) ? (int)$data['customer']['id'] : null;
+
         $orderRef = uniqid('ORD-', true);
 
         $stmt = $pdo->prepare("
-            INSERT INTO orders (ref, customer_name, total, status)
-            VALUES (?, ?, ?, 'Pending')
+        INSERT INTO orders (ref, user_id, customer_name, total, status)
+        VALUES (?, ?, ?, ?, 'Pending')
         ");
-        $stmt->execute([$orderRef, $customerName, $finalTotal]);
+        $stmt->execute([$orderRef, $userId, $customerName, $finalTotal]);
 
         $orderId = (int)$pdo->lastInsertId();
 
