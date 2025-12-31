@@ -74,5 +74,73 @@ import { Component } from '@angular/core';
       </div>
     </div>
   `
+,
+  styles: [`
+  .container .card {
+  border: none;
+  border-radius: 24px;
+  background-color: #ffffff;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.container .card-body {
+  padding: 40px;
+}
+
+.container h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #ff4b5c;
+  position: relative;
+}
+
+.container h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: #ff4b5c;
+  border-radius: 999px;
+  margin: 12px auto 0;
+}
+
+.container h5 {
+  font-weight: 700;
+  color: #ff4b5c;
+  margin-bottom: 8px;
+
+}
+
+.container p,
+.container ul {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.text-muted {
+  color: #6b7280 !important;
+}
+
+.container ul {
+  padding-left: 18px;
+}
+
+.container ul li {
+  margin-bottom: 6px;
+}
+
+.container section {
+  padding: 18px 20px;
+  border-radius: 16px;
+  background-color: #f9fafb;
+}
+
+.container strong {
+  color: #ff4b5c;
+}
+
+
+  
+`]
 })
 export class RgpdComponent {}

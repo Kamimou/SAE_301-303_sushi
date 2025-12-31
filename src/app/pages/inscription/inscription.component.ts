@@ -78,6 +78,72 @@ template: `
   </div>
 </div>
 `
+,
+  styles: [`
+  .container {
+  padding-top: 40px;
+}
+
+h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1f2937;
+  position: relative;
+}
+
+h2::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 4px;
+  background-color: #ff4b5c;
+  border-radius: 999px;
+  margin: 10px auto 0;
+}
+
+.register-card,
+.card {
+  border: none;
+  border-radius: 26px;
+  background-color: #ffffff;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.08);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.form-control,
+.form-select {
+  border-radius: 14px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  font-size: 0.95rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #ff4b5c;
+  box-shadow: 0 0 0 3px rgba(255, 75, 92, 0.15);
+}
+
+.btn-primary {
+  background-color: #ff4b5c;
+  border: none;
+  border-radius: 14px;
+  padding: 12px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(255, 75, 92, 0.35);
+}
+
+.btn-primary:hover {
+  background-color: #e63946;
+}
+
+
+`
+  ]
 })
 export class RegisterComponent {
 

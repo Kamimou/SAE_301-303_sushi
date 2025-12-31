@@ -21,7 +21,7 @@ import { ApiService } from '../../services/api.service';
           </div>
         </div>
 
-        <button class="btn btn-outline-danger mb-3" (click)="logout()">Se déconnecter</button>
+       
 
         <div *ngIf="isAdmin(); else clientView">
           <h5>Vue administrateur</h5>
@@ -97,6 +97,8 @@ import { ApiService } from '../../services/api.service';
   </div>
 </ng-template>
 
+ <button class="btn btn-outline-danger mb-3" (click)="logout()">Se déconnecter</button>
+
       </div>
 
       <ng-template #notConnected>
@@ -110,6 +112,114 @@ import { ApiService } from '../../services/api.service';
     `
     .chart-wrapper { position: relative; width: 100%; }
     .chart-wrapper canvas { width: 100% !important; height: 100% !important; display: block; }
+
+    .container h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1f2937;
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.container h2::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 4px;
+  background-color: #ff4b5c;
+  border-radius: 999px;
+  margin-top: 10px;
+}
+
+.container .card {
+  border: none;
+  border-radius: 26px;
+  background-color: #ffffff;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.08);
+}
+
+.container img.rounded-circle {
+  border: 3px solid #ff4b5c;
+  object-fit: cover;
+}
+.container h5 {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.container small.text-muted {
+  color: #6b7280 !important;
+}
+
+.btn-outline-danger {
+  border-radius: 14px;
+  font-weight: 600;
+  border-color: #ff4b5c;
+  color: #ff4b5c;
+}
+
+.btn-outline-danger:hover {
+  background-color: #ff4b5c;
+  color: #fff;
+}
+
+.container h6 {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.chart-wrapper {
+  background-color: #f9fafb;
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.table {
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.table thead {
+  background-color: #f9fafb;
+}
+
+.table th {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.bg-warning {
+  background-color: #fde68a !important;
+}
+
+.bg-success {
+  background-color: #86efac !important;
+}
+
+.bg-info {
+  background-color: #bae6fd !important;
+}
+
+.alert {
+  border-radius: 16px;
+}
+
+ng-template .card {
+  text-align: center;
+}
+
     `
   ]
 })

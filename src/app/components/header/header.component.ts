@@ -13,9 +13,12 @@ import { AuthService, User } from '../../services/auth.service';
       <div class="container">
 
         <!-- LOGO -->
-        <a class="navbar-brand" routerLink="/">
-          <strong>Sushii</strong>
-        </a>
+        <a class="navbar-brand d-flex align-items-center" routerLink="/">
+      <img
+          src="assets/products/logo-sushii.png"
+          alt="Sushii"
+          class="navbar-logo"/>
+          </a>
 
         <!-- BURGER MOBILE -->
         <button
@@ -127,7 +130,94 @@ import { AuthService, User } from '../../services/auth.service';
       </div>
     </header>
   `,
-  styles: []
+  styles: [
+    `
+    .navbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f1f5f9;
+  padding: 16px 0;
+}
+
+.navbar-brand {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ff4b5c !important;
+  letter-spacing: 0.5px;
+}
+
+.navbar-logo {
+  height: 100px;
+  width: auto;
+  transition: transform 0.2s ease;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+.nav-link {
+  font-weight: 600;
+  color: #1f2937 !important;
+  position: relative;
+  padding: 6px 10px;
+}
+
+.nav-link:hover {
+  color: #ff4b5c !important;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 3px;
+  background-color: #ff4b5c;
+  border-radius: 999px;
+}
+
+.badge.bg-primary {
+  background-color: #ff4b5c !important;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+}
+
+.navbar img.rounded-circle {
+  border: 2px solid #ff4b5c;
+  object-fit: cover;
+}
+
+.dropdown-menu {
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+  padding: 10px;
+}
+
+.dropdown-item {
+  border-radius: 12px;
+  font-weight: 500;
+  padding: 10px 14px;
+}
+
+.dropdown-item:hover {
+  background-color: #fff1f2;
+  color: #ff4b5c;
+}
+
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+    
+  `]
 })
 export class HeaderComponent implements OnInit {
 

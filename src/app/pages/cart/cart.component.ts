@@ -87,7 +87,59 @@ interface CartItemWithProduct extends CartItem {
       </div>
     </div>
   `,
-  styles: []
+  styles: [`
+  
+  h1 {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #ff0000ff;
+  position: relative;
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: #ff4b5c;
+  border-radius: 999px;
+  margin-top: 10px;
+}
+
+.card {
+  border: none;
+  border-radius: 22px;
+  background-color: #ffffff;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+}
+
+.card-title {
+  color : #f70921ff;
+  font-weight: 800;
+}
+
+.card.mb-3 {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card.mb-3:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 65px rgba(5, 5, 5, 0.12);
+}
+
+.card img {
+  max-height: 90px;
+  object-fit: contain;
+  border-radius: 14px;
+  background-color: #fff;
+  padding: 8px;
+}
+.btn.btn-primary {
+  background-color: #ff4b5c;
+  border: none;
+  }
+`
+  ]
 })
 export class CartComponent implements OnInit {
   cartItems: CartItemWithProduct[] = [];

@@ -5,94 +5,205 @@ import { RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../services/toast.service';
 
+
+
+
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
-    <section class="hero bg-light py-5 mb-5">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-md-6">
-            <h1 class="display-4 fw-bold">Bienvenue chez Sushii</h1>
-            <p class="lead text-muted">Des sushis frais, préparation maison, livraison rapide.</p>
-            <a href="/menu" routerLink="/menu" class="btn btn-primary btn-lg">Commander</a>
-          </div>
-          <div class="col-md-6">
-            <img src="/assets/hero.jpg" alt="Sushis" class="img-fluid rounded" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </section>
+    <section class="hero py-5 mb-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 text-white">
+        <span class="badge badge-welcome mb-3">🍣 Bienvenue</span>
 
-    <section class="features mb-5">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4 mb-4">
-            <div class="card h-100">
-              <div class="card-body text-center">
-                <h5 class="card-title">Frais & local</h5>
-                <p class="card-text">Ingrédients sélectionnés chez nos fournisseurs locaux.</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="card h-100">
-              <div class="card-body text-center">
-                <h5 class="card-title">Livraison rapide</h5>
-                <p class="card-text">Livraison en 30–45 min dans la zone.</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="card h-100">
-              <div class="card-body text-center">
-                <h5 class="card-title">Sûr & conforme</h5>
-                <p class="card-text">Conforme RGPD : seules les données nécessaires sont collectées.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        <h1 class="display-3 fw-bold">
+          Savourez<br />l'excellence
+        </h1>
 
-    <section class="contact mb-5">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-8 offset-md-2">
-            <h2 class="mb-4">Contact</h2>
-            <form (ngSubmit)="submitContact($event)" #contactForm="ngForm">
-              <div class="mb-3">
-                <label class="form-label">Nom</label>
-                <input type="text" class="form-control" 
-                       [(ngModel)]="contactData.name" name="name" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control" 
-                       [(ngModel)]="contactData.email" name="email" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Message</label>
-                <textarea class="form-control" rows="5"
-                          [(ngModel)]="contactData.message" name="message" required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary" [disabled]="submitting">
-                {{ submitting ? 'Envoi...' : 'Envoyer' }}
-              </button>
-            </form>
-            <p class="text-muted mt-3 small">Pour la politique de confidentialité et mentions légales, voir les liens en bas.</p>
+        <p class="lead mt-3">
+          Sushis frais, préparation artisanale, livraison express.
+          L'authentique expérience culinaire à votre porte.
+        </p>
+
+        <div class="mt-4 d-flex gap-3">
+          <a routerLink="/menu" class="btn btn-primary btn-lg">
+            🛒 Commander maintenant
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-6 text-center d-none d-md-block">
+        <img src="/assets/products/logo-sushii.png"
+             alt="Sushii"
+             loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mb-5 text-center">
+  <h2 class="section-title">Pourquoi nous choisir ?</h2>
+  <p class="text-muted">Trois piliers qui font la différence</p>
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card feature-card h-100">
+          <div class="card-body">
+            <div class="feature-icon">🌿</div>
+            <h5 class="mt-3">Frais & Local</h5>
+            <p class="text-muted">
+              Ingrédients premium sélectionnés chez nos fournisseurs de confiance. Qualité garantie chaque jour
+            </p>
           </div>
         </div>
       </div>
-    </section>
+
+      <div class="col-md-4 mb-4">
+        <div class="card feature-card h-100">
+          <div class="card-body">
+            <div class="feature-icon">⚡</div>
+            <h5 class="mt-3">Livraison Ultra-Rapide</h5>
+            <p class="text-muted">
+              30 à 45 minutes maximum. Nos livreurs s'assurent que votrecommande arrive rapidement et en parfait état.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card feature-card h-100">
+          <div class="card-body">
+            <div class="feature-icon">🔒</div>
+            <h5 class="mt-3">Sécurisé & Légal</h5>
+            <p class="text-muted">
+              Conforme RGPD, données protégées. Vos informations sont en sécurité avec nous. 
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact mb-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <h2 class="mb-4 text-center">Contact</h2>
+        <form (ngSubmit)="submitContact($event)">
+          <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input class="form-control"
+                   [(ngModel)]="contactData.name"
+                   name="name"
+                   required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control"
+                   [(ngModel)]="contactData.email"
+                   name="email"
+                   required>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Message</label>
+            <textarea class="form-control"
+                      rows="5"
+                      [(ngModel)]="contactData.message"
+                      name="message"
+                      required></textarea>
+          </div>
+
+          <button class="btn btn-primary w-100" [disabled]="submitting">
+            {{ submitting ? 'Envoi...' : 'Envoyer le message ' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
   `,
   styles: [`
     .hero {
-      border-bottom: 1px solid #dee2e6;
+  background: linear-gradient(
+    135deg,
+    #e63950 0%,
+    #f4a8a8 50%,
+    #fdebd3 100%
+  );
+  border-radius: 2rem;
+}
+
+
+.badge-welcome {
+  background: #ffd43b;
+  color: #000;
+  border-radius: 999px;
+  font-weight: 600;
+  border: none;
+}
+
+
+.hero-label {
+  color: white;
+  font-weight: 600;
+  opacity: .85;
+}
+
+/* Titres sections */
+.section-title {
+  color: #e30613;
+  font-weight: 800;
+  font-size: 2.5rem;
+}
+
+.container h2 {
+  max-width: 960px;
+  color: #e30613;
+  font-weight: 800;
+}
+
+.btn-primary {
+  background-color: #e30613;
+  border-color: #e30613;
+}
+
+.btn-primary:hover {
+  background-color: #c90510;
+  border-color: #c90510;
+}
+
+
+.feature-card {
+  border: none;
+  border-radius: 1.25rem;
+  box-shadow: 0 15px 40px rgba(0,0,0,.08);
+  transition: transform .3s ease;
+}
+
+.feature-card h5 {
+  color: #e30613;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
     }
   `]
 })
+
+
+
+
 export class HomeComponent {
   contactData = { name: '', email: '', message: '' };
   submitting = false;
