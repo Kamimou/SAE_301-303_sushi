@@ -31,7 +31,7 @@ interface CartItemWithProduct extends CartItem {
           <div class="card-body">
             <div class="row align-items-center">
               <div class="col-md-3">
-                <img [src]="item.product.image" [alt]="item.product.nom"
+                <img [src]="'assets/products/' + item.product.image + '.jpg'" [alt]="item.product.nom"
                     class="img-fluid" loading="lazy">
               </div>
               <div class="col-md-5">
