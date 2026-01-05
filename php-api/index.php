@@ -55,14 +55,67 @@ switch ($resource) {
 
     case 'orders':
         require 'controllers/OrdersController.php';
-        // ✅ CORRECTION NÉCESSAIRE : on appelle la fonction du contrôleur
+        // CORRECTION NÉCESSAIRE : on appelle la fonction du contrôleur
         handleOrdersRequest($method, $segments);
         break;
 
     case 'contact':
-        http_response_code(501); // Non implémenté
-        echo json_encode(['error' => 'Route non implémentée.']);
-        break;
+
+    // On autorise uniquement le POST
+    if ($method !== 'POST') {
+        http_response_code(405);
+        echo json_encode(['error' => 'Méthode non autorisée']);
+        exit;
+    }
+
+    // Récupération des données JSON envoyées par Angular
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    // Vérification des champs obligatoires
+    if (
+        empty($data['name']) ||
+        empty($data['email']) ||
+        empty($data['message'])
+    ) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Champs manquants']);
+        exit;
+    }
+
+    try {
+        // Connexion à la base de données
+        $pdo = Database::connect();
+
+        // Insertion du message en base
+        $stmt = $pdo->prepare(
+            "INSERT INTO messages (name, email, message)
+             VALUES (?, ?, ?)"
+        );
+
+        $stmt->execute([
+            $data['name'],
+            $data['email'],
+            $data['message']
+        ]);
+
+        // Succès
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Message envoyé avec succès'
+        ]);
+
+    } catch (Exception $e) {
+        // Erreur serveur / base de données
+        http_response_code(500);
+        echo json_encode([
+            'error' => 'Erreur serveur',
+            'details' => $e->getMessage()
+        ]);
+    }
+
+    break;
+
 
     case '':
     case 'health':
